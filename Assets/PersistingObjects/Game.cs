@@ -1,22 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
-public class Game : MonoBehaviour
+public class Game : PersistableObject
 {
-    public Transform prefab;
+    public ShapeFactory shapeFactory;
     public KeyCode createKey = KeyCode.C;
     public KeyCode newGameKey = KeyCode.N;
     public KeyCode saveKey = KeyCode.S;
     public KeyCode loadKey = KeyCode.L;
-    private List<Transform> objects;
+    private List<Shape> shapes;
+
+    public PersistentStorage storage;
     // Start is called before the first frame update
-    private string savePath;
     private void Awake()
     {
-        objects = new List<Transform>();
-        savePath = Path.Combine(Application.persistentDataPath, "saveFile");
+        shapes = new List<Shape>();
     }
     void Start()
     {
@@ -28,7 +27,7 @@ public class Game : MonoBehaviour
     {
         if (Input.GetKeyDown(createKey))
         {
-            CreateObject();
+            CreateShape();
         }
         else if (Input.GetKeyDown(newGameKey))
         {
@@ -36,63 +35,52 @@ public class Game : MonoBehaviour
         }
         else if (Input.GetKeyDown(saveKey))
         {
-            Save();
+            storage.Save(this);
         }
         else if (Input.GetKeyDown(loadKey))
         {
-            Load();
+            BeginNewGame();
+            storage.Load(this);
         }
     }
 
-    private void CreateObject()
+    private void CreateShape()
     {
-        Transform t = Instantiate(prefab);
+        Shape instance = shapeFactory.GetRandom();
+        Transform t = instance.transform;
         t.localPosition = Random.insideUnitSphere * 5;
         t.localRotation = Random.rotation;
         t.localScale = Vector3.one * Random.Range(0.1f, 1f);
-        objects.Add(t);
+        shapes.Add(instance);
     }
 
     private void BeginNewGame()
     {
-        for (int i = 0; i < objects.Count; i++)
+        for (int i = 0; i < shapes.Count; i++)
         {
-            Destroy(objects[i].gameObject);
+            Destroy(shapes[i].gameObject);
         }
-        objects.Clear();
+        shapes.Clear();
     }
 
-    private void Save()
+    public override void Save(GameDataWriter writer)
     {
-        using (var writer = new BinaryWriter(File.Open(savePath, FileMode.Create)))
+        writer.Write(shapes.Count);
+        for (int i = 0; i < shapes.Count; i++)
         {
-            writer.Write(objects.Count);
-            for (int i = 0; i < objects.Count; i++)
-            {
-                Transform t = objects[i];
-                writer.Write(t.localPosition.x);
-                writer.Write(t.localPosition.y);
-                writer.Write(t.localPosition.z);
-            }
+            shapes[i].Save(writer);
         }
     }
 
-    private void Load()
+    public override void Load(GameDataReader reader)
     {
-        BeginNewGame();
-        using (var reader = new BinaryReader(File.Open(savePath, FileMode.Open)))
+        int count = reader.ReadInt();
+        for (int i = 0; i < count; i++)
         {
-            int count = reader.ReadInt32();
-            for (int i = 0; i < count; i++)
-            {
-                Vector3 p;
-                p.x = reader.ReadSingle();
-                p.y = reader.ReadSingle();
-                p.z = reader.ReadSingle();
-                Transform t = Instantiate(prefab);
-                t.localPosition = p;
-                objects.Add(t);
-            }
+            Shape instance = shapeFactory.Get(0);
+            instance.Load(reader);
+            shapes.Add(instance);
         }
     }
+
 }
