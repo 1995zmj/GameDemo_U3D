@@ -18,5 +18,6 @@ MonoBehaviour:
   - {fileID: 8683046598080655570, guid: 05533cbf3b3acb24cbdbc5e4350e2579, type: 3}
   materials:
   - {fileID: 2100000, guid: 6ac0841a636e6a641bcc12f15ab0a393, type: 2}
-  - {fileID: 2100000, guid: 2db2c512844dc094e99cc81c1ab6e3c4, type: 2}
-  - {fileID: 2100000, guid: 68450afff84c54541af4deb1aa970c0c, type: 2}
+  - {fileID: 2100000, guid: c32bd4ebddd5ece41ac0f5ab1d58aef1, type: 2}
+  - {fileID: 2100000, guid: dd9e13c2d873db6478ffed9c40e4fd4f, type: 2}
+  recycle: 1

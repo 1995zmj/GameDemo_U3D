@@ -5,11 +5,16 @@ using UnityEngine;
 public class Game : PersistableObject
 {
     public ShapeFactory shapeFactory;
+    public float CreationSpeed { get; set; }
+    public float DestructionSpeed { get; set; }
     public KeyCode createKey = KeyCode.C;
     public KeyCode newGameKey = KeyCode.N;
     public KeyCode saveKey = KeyCode.S;
     public KeyCode loadKey = KeyCode.L;
+    public KeyCode destroyKey = KeyCode.X;
     private List<Shape> shapes;
+    private float creationProgress;
+    private float destroyProgress;
 
     public PersistentStorage storage;
 
@@ -44,6 +49,26 @@ public class Game : PersistableObject
             BeginNewGame();
             storage.Load(this);
         }
+        else if (Input.GetKeyDown(destroyKey))
+        {
+            DestroyShape();
+        }
+
+
+        creationProgress += Time.deltaTime * CreationSpeed;
+        while(creationProgress >= 1f)
+        {
+            creationProgress -= 1f;
+            CreateShape();
+        }
+
+
+        destroyProgress += Time.deltaTime * DestructionSpeed;
+        while(destroyProgress >= 1f)
+        {
+            destroyProgress -= 1f;
+            DestroyShape();
+        }
     }
 
     private void CreateShape()
@@ -67,7 +92,8 @@ public class Game : PersistableObject
     {
         for (int i = 0; i < shapes.Count; i++)
         {
-            Destroy(shapes[i].gameObject);
+            // Destroy(shapes[i].gameObject);
+            shapeFactory.Reclaim(shapes[i]);
         }
         shapes.Clear();
     }
@@ -100,6 +126,20 @@ public class Game : PersistableObject
             instance.Load(reader);
             shapes.Add(instance);
         }
+    }
+
+    public void DestroyShape()
+    {
+        if (shapes.Count > 0)
+        {
+            int index = Random.Range(0, shapes.Count);
+            // Destroy(shapes[index].gameObject);
+            shapeFactory.Reclaim(shapes[index]);
+            int lastIndex = shapes.Count - 1;
+            shapes[index] = shapes[lastIndex];
+            shapes.RemoveAt(lastIndex);
+        }
+
     }
 
 }
