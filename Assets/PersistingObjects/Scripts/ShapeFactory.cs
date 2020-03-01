@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [CreateAssetMenu]
 public class ShapeFactory : ScriptableObject
@@ -11,7 +12,8 @@ public class ShapeFactory : ScriptableObject
     List<Material> materials = new List<Material>();
 
     [SerializeField]
-    bool recycle;
+    bool recycle = false;
+    Scene poolScene;
 
     List<Shape>[] pools;
 
@@ -36,6 +38,7 @@ public class ShapeFactory : ScriptableObject
             {
                 instance = Instantiate(perfabs[shapeId]);
                 instance.ShapeId = shapeId;
+                SceneManager.MoveGameObjectToScene(instance.gameObject, poolScene);
             }
         }
         else
@@ -59,13 +62,34 @@ public class ShapeFactory : ScriptableObject
         {
             pools[i] = new List<Shape>();
         }
+
+        if (Application.isEditor)
+        {
+            poolScene = SceneManager.GetSceneByName(name);
+            if (poolScene.isLoaded)
+            {
+                GameObject[] rootObjects = poolScene.GetRootGameObjects();
+                for (int i = 0; i < rootObjects.Length; i++)
+                {
+                    Shape pooledShape = rootObjects[i].GetComponent<Shape>();
+                    if(!pooledShape.gameObject.activeSelf)
+                    {
+                        pools[pooledShape.ShapeId].Add(pooledShape);
+                    }
+                }
+                return;
+            }
+        }
+
+
+        poolScene = SceneManager.CreateScene(name);
     }
 
     public void Reclaim(Shape shapeToRecycle)
     {
-        if(recycle)
+        if (recycle)
         {
-            if(pools == null)
+            if (pools == null)
             {
                 CreatePools();
             }
