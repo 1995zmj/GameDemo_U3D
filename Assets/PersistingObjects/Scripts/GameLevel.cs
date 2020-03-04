@@ -17,17 +17,21 @@ public class GameLevel : PersistableObject
 
     public static GameLevel Current { get; private set; }
 
-    public Vector3 SpawnPoint
+    // public Vector3 SpawnPoint
+    // {
+    //     get
+    //     {
+    //         return spawnZone.SpawnPoint;
+    //     }
+    // }
+    public Shape SpawnShape()
     {
-        get
-        {
-            return spawnZone.SpawnPoint;
-        }
+        return spawnZone.SpawnShape();
     }
     private void OnEnable()
     {
         Current = this;
-        if(persistableObjects == null)
+        if (persistableObjects == null)
         {
             persistableObjects = new PersistableObject[0];
         }

@@ -1306,14 +1306,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33fa061b50a2e6648b7507ed3657f859, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shapeFactory: {fileID: 11400000, guid: 38ba46da1e7d3b84bb4a7a1ad31a0440, type: 2}
+  shapeFactories:
+  - {fileID: 11400000, guid: 92c0420f7b8db4f43bb42407de717c59, type: 2}
+  - {fileID: 11400000, guid: 38ba46da1e7d3b84bb4a7a1ad31a0440, type: 2}
   createKey: 99
   newGameKey: 110
   saveKey: 115
   loadKey: 108
   destroyKey: 120
+  creationSpeedSlider: {fileID: 512376170}
+  destructionSpeedSlider: {fileID: 928336191}
   storage: {fileID: 1536394039}
   levelCount: 2
+  reseedOnLoad: 0
 --- !u!4 &1940974338
 Transform:
   m_ObjectHideFlags: 0

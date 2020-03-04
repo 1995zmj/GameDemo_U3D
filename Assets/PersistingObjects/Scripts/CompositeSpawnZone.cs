@@ -12,6 +12,9 @@ public class CompositeSpawnZone : SpawnZone
     [SerializeField]
     bool sequential = true;
     int nextSequentialIndex = 0;
+
+    [SerializeField]
+    bool overrideConfig;
     public override Vector3 SpawnPoint
     {
         get
@@ -33,6 +36,31 @@ public class CompositeSpawnZone : SpawnZone
         }
     }
 
+    public override Shape SpawnShape ()
+    {
+        if (overrideConfig)
+        {
+            return base.SpawnShape();
+        }
+        else
+        {
+            int index = 0;
+            if (sequential)
+            {
+                index = nextSequentialIndex++;
+                if (nextSequentialIndex >= spawnZones.Length)
+                {
+                    nextSequentialIndex = 0;
+                }
+            }
+            else
+            {
+                index = Random.Range(0, spawnZones.Length);
+            }
+            return spawnZones[index].SpawnShape();
+        }
+    }
+
     public override void Save(GameDataWriter writer)
     {
         writer.Write(nextSequentialIndex);
@@ -42,4 +70,6 @@ public class CompositeSpawnZone : SpawnZone
     {
         nextSequentialIndex = reader.ReadInt();
     }
+
+
 }
