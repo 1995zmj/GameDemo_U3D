@@ -5,7 +5,7 @@ using UnityEngine;
 public class SphereSpawnZone : SpawnZone
 {
     [SerializeField]
-    bool surfaceOnly;
+    bool surfaceOnly = true;
     public override Vector3 SpawnPoint
     {
         get

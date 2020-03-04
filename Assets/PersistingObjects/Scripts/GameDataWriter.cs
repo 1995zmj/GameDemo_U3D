@@ -19,6 +19,11 @@ public class GameDataWriter
         writer.Write(value);
     }
 
+    public void Write(Random.State value) 
+    {
+        writer.Write(JsonUtility.ToJson(value));
+    }
+
     public void Write(Quaternion value)
     {
         writer.Write(value.x);
@@ -39,5 +44,6 @@ public class GameDataWriter
         writer.Write(value.r);
         writer.Write(value.g);
         writer.Write(value.b);
+        writer.Write(value.a);
     }
 }

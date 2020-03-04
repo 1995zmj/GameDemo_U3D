@@ -21,6 +21,11 @@ public class GameDataReader
         return reader.ReadInt32();
     }
 
+    public Random.State ReadRandomState()
+    {
+        return JsonUtility.FromJson<Random.State>(reader.ReadString());
+    }
+
     public Quaternion ReadQuaternion()
     {
         Quaternion value;
