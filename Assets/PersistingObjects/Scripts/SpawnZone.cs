@@ -2,26 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public struct SpawnConfiguration
+{
+    public enum MovementDirection
+    {
+        Forward,
+        Upward,
+        Outward,
+        Random
+    }
+    public ShapeFactory[] factories;
+    public MovementDirection movementDirection;
+    public FloatRange speed;
+    public FloatRange angularSpeed;
+    public FloatRange scale;
+    public ColorRangeHSV color;
+    public bool uniformColor;
+
+    public MovementDirection oscillationDirection;
+
+    public FloatRange oscillationAmplitude;
+
+    public FloatRange oscillationFrequency;
+}
+
+
 public abstract class SpawnZone : PersistableObject
 {
-    [System.Serializable]
-    public struct SpawnConfiguration
-    {
-        public enum MovementDirection
-        {
-            Forward,
-            Upward,
-            Outward,
-            Random
-        }
-        public ShapeFactory[] factories;
-        public MovementDirection movementDirection;
-        public FloatRange speed;
-        public FloatRange angularSpeed;
-        public FloatRange scale;
-        public ColorRangeHSV color;
-        public bool uniformColor;
-    }
+
     [SerializeField]
     SpawnConfiguration spawnConfig;
     public abstract Vector3 SpawnPoint { get; }
@@ -82,25 +91,52 @@ public abstract class SpawnZone : PersistableObject
                 shape.SetColor(spawnConfig.color.RandomInRange, i);
             }
         }
-        shape.AngularVelocity = Random.onUnitSphere * spawnConfig.angularSpeed.RandomValueInRange;
-        Vector3 direction;
-        switch (spawnConfig.movementDirection)
+        float angularSpeed = spawnConfig.angularSpeed.RandomValueInRange;
+        if (angularSpeed != 0f)
         {
-            case SpawnConfiguration.MovementDirection.Upward:
-                direction = transform.up;
-                break;
-            case SpawnConfiguration.MovementDirection.Outward:
-                direction = (t.localPosition - transform.position).normalized;
-                break;
-            case SpawnConfiguration.MovementDirection.Random:
-                direction = Random.onUnitSphere;
-                break;
-            default:
-                direction = transform.forward;
-                break;
+            var rotation = shape.AddBehavior<RotationShapeBehavior>();
+            rotation.AngularVelocity = Random.onUnitSphere * angularSpeed;
         }
 
-        shape.Velocity = transform.forward * spawnConfig.speed.RandomValueInRange;
+        float speed = spawnConfig.speed.RandomValueInRange;
+        if (speed != 0f)
+        {
+
+            var movement = shape.AddBehavior<MovementShapeBehavior>();
+            movement.Velocity = GetDirectionVector(spawnConfig.movementDirection, t) * speed;
+        }
+
+        SetupOscillation(shape);
         return shape;
+    }
+    void SetupOscillation(Shape shape)
+    {
+        float amplitude = spawnConfig.oscillationAmplitude.RandomValueInRange;
+        float frequency = spawnConfig.oscillationFrequency.RandomValueInRange;
+        if (amplitude == 0f || frequency == 0f)
+        {
+            return;
+        }
+        var oscillation = shape.AddBehavior<OscillationShapeBehavior>();
+        oscillation.Offset = GetDirectionVector(
+            spawnConfig.oscillationDirection, shape.transform
+        ) * amplitude;
+        oscillation.Frequency = frequency;
+    }
+    Vector3 GetDirectionVector(
+        SpawnConfiguration.MovementDirection direction, Transform t
+    )
+    {
+        switch (direction)
+        {
+            case SpawnConfiguration.MovementDirection.Upward:
+                return transform.up;
+            case SpawnConfiguration.MovementDirection.Outward:
+                return (t.localPosition - transform.position).normalized;
+            case SpawnConfiguration.MovementDirection.Random:
+                return Random.onUnitSphere;
+            default:
+                return transform.forward;
+        }
     }
 }

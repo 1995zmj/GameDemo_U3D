@@ -26,7 +26,7 @@ public class Game : PersistableObject
     // public SpawnZone spawnZoneOfLevel { get; set; }
     public int levelCount = 2;
     int loadingLevelBuildIndex;
-    const int saveVersion = 5;
+    const int saveVersion = 6;
 
     Random.State mainRandomState;
 
