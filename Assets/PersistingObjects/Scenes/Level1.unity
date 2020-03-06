@@ -261,6 +261,12 @@ MonoBehaviour:
       relativeScale:
         min: 0.25
         max: 0.5
+      orbitRadius:
+        min: 1
+        max: 2
+      orbitFrequency:
+        min: 0.25
+        max: 0.5
     factories:
     - {fileID: 11400000, guid: 92c0420f7b8db4f43bb42407de717c59, type: 2}
     movementDirection: 2
