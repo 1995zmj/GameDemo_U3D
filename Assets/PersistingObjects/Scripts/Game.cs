@@ -31,11 +31,7 @@ public class Game : PersistableObject
     Random.State mainRandomState;
 
     [SerializeField] bool reseedOnLoad;
-    // public static Game Instance { get; private set; }
-    // private void OnEnable()
-    // {
-    //     Instance = this;
-    // }
+    public static Game Instance { get; private set; }
     void Start()
     {
         mainRandomState = Random.state;
@@ -65,6 +61,8 @@ public class Game : PersistableObject
 
     private void OnEnable()
     {
+        Instance = this;
+
         if (shapeFactories[0].FactoryId != 0)
         {
             for (int i = 0; i < shapeFactories.Length; i++)
@@ -80,7 +78,8 @@ public class Game : PersistableObject
     {
         if (Input.GetKeyDown(createKey))
         {
-            CreateShape();
+            // CreateShape();
+            GameLevel.Current.SpawnShapes();
         }
         else if (Input.GetKeyDown(newGameKey))
         {
@@ -120,7 +119,8 @@ public class Game : PersistableObject
         while (creationProgress >= 1f)
         {
             creationProgress -= 1f;
-            CreateShape();
+            // CreateShape();
+            GameLevel.Current.SpawnShapes();
         }
 
 
@@ -137,9 +137,14 @@ public class Game : PersistableObject
         }
     }
 
-    private void CreateShape()
+    // private void CreateShape()
+    // {
+    //     shapes.Add(GameLevel.Current.SpawnShape());
+    // }
+
+    public void AddShape(Shape shape)
     {
-        shapes.Add(GameLevel.Current.SpawnShape());
+        shapes.Add(shape);
     }
 
     IEnumerator LoadLevel(int levelBuildIndex)
@@ -226,12 +231,12 @@ public class Game : PersistableObject
         }
         for (int i = 0; i < count; i++)
         {
-            int factoryId = version >=5 ? reader.ReadInt() : 0;
+            int factoryId = version >= 5 ? reader.ReadInt() : 0;
             int ShapeId = version > 0 ? reader.ReadInt() : 0;
             int MaterialId = version > 0 ? reader.ReadInt() : 0;
             Shape instance = shapeFactories[factoryId].Get(ShapeId, MaterialId);
             instance.Load(reader);
-            shapes.Add(instance);
+            // shapes.Add(instance);
         }
     }
 

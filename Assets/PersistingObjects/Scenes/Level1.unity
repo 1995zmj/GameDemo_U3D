@@ -257,6 +257,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnConfig:
+    satellite:
+      relativeScale:
+        min: 0.25
+        max: 0.5
     factories:
     - {fileID: 11400000, guid: 92c0420f7b8db4f43bb42407de717c59, type: 2}
     movementDirection: 2
@@ -285,8 +289,8 @@ MonoBehaviour:
       min: 0.21
       max: 0.18
     oscillationFrequency:
-      min: 0.18
-      max: 0.24
+      min: 0.5
+      max: 1
   surfaceOnly: 1
 --- !u!4 &1889367510
 Transform:
