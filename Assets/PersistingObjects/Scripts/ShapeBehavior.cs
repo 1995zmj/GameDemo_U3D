@@ -35,12 +35,14 @@ public abstract class ShapeBehavior
 {
     public bool IsReclaimed { get; set; }
     public abstract ShapeBehaviorType BehaviorType { get; }
-    public abstract void GameUpdate(Shape shape);
+    public abstract bool  GameUpdate(Shape shape);
     public abstract void Save(GameDataWriter writer);
 
     public abstract void Load(GameDataReader reader);
 
     public abstract void Recycle();
+    public virtual void ResolveShapeInstances () {}
+
 
     void OnEnable()
     {

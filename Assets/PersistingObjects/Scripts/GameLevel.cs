@@ -6,7 +6,13 @@ public class GameLevel : PersistableObject
 {
     [SerializeField]
     SpawnZone spawnZone;
-
+    [SerializeField]
+    int populationLimit;
+    public int PopulationLimit {
+		get {
+			return populationLimit;
+		}
+	}
     [SerializeField]
     PersistableObject[] persistableObjects;
     // Start is called before the first frame update

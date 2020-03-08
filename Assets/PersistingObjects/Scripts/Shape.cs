@@ -1,6 +1,44 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+[System.Serializable]
+public struct ShapeInstance
+{
+    public Shape Shape { get; private set; }
+    int instanceIdOrSaveIndex;
+    public ShapeInstance(Shape shape)
+    {
+        Shape = shape;
+        instanceIdOrSaveIndex = shape.InstanceId;
+    }
+    public ShapeInstance(int saveIndex)
+    {
+        Shape = null;
+        instanceIdOrSaveIndex = saveIndex;
+    }
+
+    public void Resolve () {
+		if (instanceIdOrSaveIndex >= 0) {
+			Shape = Game.Instance.GetShape(instanceIdOrSaveIndex);
+			instanceIdOrSaveIndex = Shape.InstanceId;
+		}
+	}
+
+    public static implicit operator ShapeInstance(Shape shape)
+    {
+        return new ShapeInstance(shape);
+    }
+    public bool IsValid
+    {
+        get
+        {
+            return Shape && instanceIdOrSaveIndex == Shape.InstanceId;
+        }
+    }
+
+}
+
 public class Shape : PersistableObject
 {
     static int colorPropertyId = Shader.PropertyToID("_Color");
@@ -9,7 +47,9 @@ public class Shape : PersistableObject
     Color[] colors;
     private int shapeId = int.MinValue;
 
-    public float Age{get; private set;}
+    public float Age { get; private set; }
+    public int InstanceId { get; private set; }
+    public int SaveIndex { get; set; }
 
     [SerializeField]
     MeshRenderer[] meshRenderers;
@@ -68,6 +108,7 @@ public class Shape : PersistableObject
         get;
         private set;
     }
+
 
     public void SetMaterial(Material material, int materialId)
     {
@@ -210,15 +251,20 @@ public class Shape : PersistableObject
     {
         // transform.Rotate(AngularVelocity * Time.deltaTime);
         // transform.localPosition += Velocity * Time.deltaTime;
-        Age+= Time.deltaTime;
+        Age += Time.deltaTime;
         for (int i = 0; i < behaviorList.Count; i++)
         {
-            behaviorList[i].GameUpdate(this);
+            if (!behaviorList[i].GameUpdate(this))
+            {
+                behaviorList[i].Recycle();
+                behaviorList.RemoveAt(i--);
+            }
         }
     }
     public void Recycle()
     {
         Age = 0;
+        InstanceId += 1;
         for (int i = 0; i < behaviorList.Count; i++)
         {
             // Destroy(behaviorList[i]);
@@ -227,4 +273,10 @@ public class Shape : PersistableObject
         behaviorList.Clear();
         OriginFactory.Reclaim(this);
     }
+
+    public void ResolveShapeInstances () {
+		for (int i = 0; i < behaviorList.Count; i++) {
+			behaviorList[i].ResolveShapeInstances();
+		}
+	}
 }

@@ -144,8 +144,13 @@ public class Game : PersistableObject
 
     public void AddShape(Shape shape)
     {
+        shape.SaveIndex = shapes.Count;
         shapes.Add(shape);
     }
+
+    public Shape GetShape (int index) {
+		return shapes[index];
+	}
 
     IEnumerator LoadLevel(int levelBuildIndex)
     {
@@ -238,6 +243,9 @@ public class Game : PersistableObject
             instance.Load(reader);
             // shapes.Add(instance);
         }
+        for (int i = 0; i < shapes.Count; i++) {
+			shapes[i].ResolveShapeInstances();
+		}
     }
 
     public void DestroyShape()
@@ -249,6 +257,7 @@ public class Game : PersistableObject
             // shapeFactory.Reclaim(shapes[index]);
             shapes[index].Recycle();
             int lastIndex = shapes.Count - 1;
+            shapes[lastIndex].SaveIndex = index;
             shapes[index] = shapes[lastIndex];
             shapes.RemoveAt(lastIndex);
         }

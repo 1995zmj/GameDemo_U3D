@@ -46,4 +46,8 @@ public class GameDataWriter
         writer.Write(value.b);
         writer.Write(value.a);
     }
+
+    public void Write (ShapeInstance value) {
+		writer.Write(value.IsValid ? value.Shape.SaveIndex : -1);
+	}
 }

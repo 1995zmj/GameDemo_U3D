@@ -54,4 +54,8 @@ public class GameDataReader
         value.a = reader.ReadSingle();
         return value;
     }
+
+    public ShapeInstance ReadShapeInstance () {
+		return new ShapeInstance(reader.ReadInt32());
+	}
 }
