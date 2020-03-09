@@ -39,6 +39,14 @@ public struct SpawnConfiguration
     public FloatRange oscillationAmplitude;
 
     public FloatRange oscillationFrequency;
+    
+    [System.Serializable]
+    public struct LifecycleConfiguration
+    {
+        [FloatRangeSlider(0f, 2f)] public FloatRange growingDuration;
+    }
+
+    public LifecycleConfiguration lifecycle;
 }
 
 
@@ -123,10 +131,12 @@ public abstract class SpawnZone : PersistableObject
         }
 
         SetupOscillation(shape);
+        float growingDuration = spawnConfig.lifecycle.growingDuration.RandomValueInRange;
         int satelliteCount = spawnConfig.satellite.amount.RandomValueInRange;
 		for (int i = 0; i < satelliteCount; i++) {
-			CreateSatelliteFor(shape);
+			CreateSatelliteFor(shape,growingDuration);
 		}
+        SetupLifecycle(shape, growingDuration);
         // return shape;
     }
     void SetupOscillation(Shape shape)
@@ -159,8 +169,16 @@ public abstract class SpawnZone : PersistableObject
                 return transform.forward;
         }
     }
+    
+    public void SetupLifecycle(Shape shape, float growingDuration)
+    {
+        if (growingDuration > 0f)
+        {
+            shape.AddBehavior<GrowingShapeBehavior>().Initialize(shape, growingDuration);
+        }
+    }
 
-    void CreateSatelliteFor(Shape focalShape)
+    void CreateSatelliteFor(Shape focalShape, float growingDuration)
     {
         int factoryIndex = Random.Range(0, spawnConfig.factories.Length);
         Shape shape = spawnConfig.factories[factoryIndex].GetRandom();
@@ -176,10 +194,12 @@ public abstract class SpawnZone : PersistableObject
             spawnConfig.satellite.orbitRadius.RandomValueInRange,
             spawnConfig.satellite.orbitFrequency.RandomValueInRange
         );
+        SetupLifecycle(shape, growingDuration);
     }
 
     void SetupColor(Shape shape)
     {
+        // test index
         if (spawnConfig.uniformColor)
         {
             shape.SetColor(spawnConfig.color.RandomInRange);

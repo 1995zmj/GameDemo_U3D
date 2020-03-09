@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameLevel : PersistableObject
 {
     [SerializeField]
-    SpawnZone spawnZone;
+    private SpawnZone spawnZone;
     [SerializeField]
     int populationLimit;
     public int PopulationLimit {
