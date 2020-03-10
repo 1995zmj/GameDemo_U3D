@@ -212,6 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnZone: {fileID: 1889367509}
+  populationLimit: 0
   persistableObjects: []
 --- !u!4 &1403235337
 Transform:
@@ -258,6 +259,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnConfig:
     satellite:
+      amount:
+        min: 4
+        max: 5
       relativeScale:
         min: 0.25
         max: 0.5
@@ -297,6 +301,13 @@ MonoBehaviour:
     oscillationFrequency:
       min: 0.5
       max: 1
+    lifecycle:
+      growingDuration:
+        min: 0
+        max: 0
+      dyingDuration:
+        min: 1.3262032
+        max: 2
   surfaceOnly: 1
 --- !u!4 &1889367510
 Transform:
