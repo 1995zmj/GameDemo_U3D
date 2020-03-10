@@ -44,6 +44,15 @@ public struct SpawnConfiguration
     public struct LifecycleConfiguration
     {
         [FloatRangeSlider(0f, 2f)] public FloatRange growingDuration;
+        [FloatRangeSlider(0f, 2f)] public FloatRange dyingDuration;
+        public Vector2 RandomDurations {
+            get {
+                return new Vector2(
+                    growingDuration.RandomValueInRange,
+                    dyingDuration.RandomValueInRange
+                );
+            }
+        }
     }
 
     public LifecycleConfiguration lifecycle;
@@ -132,11 +141,13 @@ public abstract class SpawnZone : PersistableObject
 
         SetupOscillation(shape);
         float growingDuration = spawnConfig.lifecycle.growingDuration.RandomValueInRange;
+        Vector2 lifecycleDurations = spawnConfig.lifecycle.RandomDurations;
         int satelliteCount = spawnConfig.satellite.amount.RandomValueInRange;
-		for (int i = 0; i < satelliteCount; i++) {
-			CreateSatelliteFor(shape,growingDuration);
-		}
-        SetupLifecycle(shape, growingDuration);
+		for (int i = 0; i < satelliteCount; i++)
+        {
+            CreateSatelliteFor(shape, lifecycleDurations);
+        }
+        SetupLifecycle(shape, lifecycleDurations);
         // return shape;
     }
     void SetupOscillation(Shape shape)
@@ -170,15 +181,19 @@ public abstract class SpawnZone : PersistableObject
         }
     }
     
-    public void SetupLifecycle(Shape shape, float growingDuration)
+    public void SetupLifecycle(Shape shape, Vector2 durations)
     {
-        if (growingDuration > 0f)
+        if (durations.x > 0f)
         {
-            shape.AddBehavior<GrowingShapeBehavior>().Initialize(shape, growingDuration);
+            shape.AddBehavior<GrowingShapeBehavior>().Initialize(shape, durations.x);
+        }
+        else if(durations.y > 0f)
+        {
+            shape.AddBehavior<DyingShapeBehavior>().Initialize(shape, durations.y);
         }
     }
 
-    void CreateSatelliteFor(Shape focalShape, float growingDuration)
+    void CreateSatelliteFor(Shape focalShape, Vector2 lifecycleDurations)
     {
         int factoryIndex = Random.Range(0, spawnConfig.factories.Length);
         Shape shape = spawnConfig.factories[factoryIndex].GetRandom();
@@ -194,7 +209,7 @@ public abstract class SpawnZone : PersistableObject
             spawnConfig.satellite.orbitRadius.RandomValueInRange,
             spawnConfig.satellite.orbitFrequency.RandomValueInRange
         );
-        SetupLifecycle(shape, growingDuration);
+        SetupLifecycle(shape, lifecycleDurations);
     }
 
     void SetupColor(Shape shape)

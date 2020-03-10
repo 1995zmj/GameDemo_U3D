@@ -25,7 +25,7 @@ public static class ShapeBehaviorTypeMethods
             case ShapeBehaviorType.Satellite:
 				return ShapeBehaviorPool<SatelliteShapeBehavior>.Get();
             case ShapeBehaviorType.Growing:
-                return  ShapeBehaviorPool<>
+                return ShapeBehaviorPool<GrowingShapeBehavior>.Get();
         }
         UnityEngine.Debug.Log("Forgot to support " + type);
         return null;
