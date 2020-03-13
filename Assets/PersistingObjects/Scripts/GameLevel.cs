@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameLevel : PersistableObject
+public partial class GameLevel : PersistableObject
 {
     [SerializeField]
     private SpawnZone spawnZone;
@@ -75,16 +75,5 @@ public class GameLevel : PersistableObject
         }
     }
     
-    public bool HasMissingLevelObjects {
-        get {
-            if (levelObjects != null) {
-                for (int i = 0; i < levelObjects.Length; i++) {
-                    if (levelObjects[i] == null) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-    }
+    
 }
