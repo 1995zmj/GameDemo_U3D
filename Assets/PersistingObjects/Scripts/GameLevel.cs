@@ -13,8 +13,9 @@ public class GameLevel : PersistableObject
 			return populationLimit;
 		}
 	}
+    [UnityEngine.Serialization.FormerlySerializedAs("persistentObjects")]
     [SerializeField]
-    PersistableObject[] persistableObjects;
+    GameLevelObject[] levelObjects;
     // Start is called before the first frame update
     // void Start()
     // {
@@ -38,9 +39,15 @@ public class GameLevel : PersistableObject
     private void OnEnable()
     {
         Current = this;
-        if (persistableObjects == null)
+        if (levelObjects == null)
         {
-            persistableObjects = new PersistableObject[0];
+            levelObjects = new GameLevelObject[0];
+        }
+    }
+    
+    public void GameUpdate () {
+        for (int i = 0; i < levelObjects.Length; i++) {
+            levelObjects[i].GameUpdate();
         }
     }
 
@@ -52,10 +59,10 @@ public class GameLevel : PersistableObject
 
     public override void Save(GameDataWriter writer)
     {
-        writer.Write(persistableObjects.Length);
-        for (int i = 0; i < persistableObjects.Length; i++)
+        writer.Write(levelObjects.Length);
+        for (int i = 0; i < levelObjects.Length; i++)
         {
-            persistableObjects[i].Save(writer);
+            levelObjects[i].Save(writer);
         }
     }
 
@@ -64,7 +71,20 @@ public class GameLevel : PersistableObject
         int savedCount = reader.ReadInt();
         for (int i = 0; i < savedCount; i++)
         {
-            persistableObjects[i].Load(reader);
+            levelObjects[i].Load(reader);
+        }
+    }
+    
+    public bool HasMissingLevelObjects {
+        get {
+            if (levelObjects != null) {
+                for (int i = 0; i < levelObjects.Length; i++) {
+                    if (levelObjects[i] == null) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -79,6 +80,16 @@ public class Shape : PersistableObject
             {
                 Debug.LogError("Not allowed to change origin factory.");
             }
+        }
+    }
+    
+    public void MarkAsDying () {
+        Game.Instance.MarkAsDying(this);
+    }
+    
+    public bool IsMarkedAsDying {
+        get {
+            return Game.Instance.IsMarkedAsDying(this);
         }
     }
 

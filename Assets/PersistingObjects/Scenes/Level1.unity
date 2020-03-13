@@ -113,6 +113,81 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &66989892
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 66989894}
+  - component: {fileID: 66989893}
+  - component: {fileID: 66989896}
+  - component: {fileID: 66989895}
+  m_Layer: 9
+  m_Name: LifeZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &66989893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66989892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cb81802b629b6f49aa745f11aa3d5d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dyingDuration: 0.5
+--- !u!4 &66989894
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66989892}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.09, y: 0.45, z: 0.14}
+  m_LocalScale: {x: 3.1048, y: 3.7409, z: 2.4129}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &66989895
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66989892}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &66989896
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66989892}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &905537464
 GameObject:
   m_ObjectHideFlags: 0
@@ -213,7 +288,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnZone: {fileID: 1889367509}
   populationLimit: 0
-  persistableObjects: []
+  levelObjects:
+  - {fileID: 1889367509}
 --- !u!4 &1403235337
 Transform:
   m_ObjectHideFlags: 0
@@ -238,7 +314,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1889367510}
   - component: {fileID: 1889367509}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SpawnZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -260,8 +336,8 @@ MonoBehaviour:
   spawnConfig:
     satellite:
       amount:
-        min: 4
-        max: 5
+        min: 0
+        max: 0
       relativeScale:
         min: 0.25
         max: 0.5
@@ -271,18 +347,19 @@ MonoBehaviour:
       orbitFrequency:
         min: 0.25
         max: 0.5
+      uniformLifecycles: 1
     factories:
     - {fileID: 11400000, guid: 92c0420f7b8db4f43bb42407de717c59, type: 2}
-    movementDirection: 2
+    movementDirection: 1
     speed:
-      min: 0
-      max: 1
+      min: 0.5
+      max: 1.5
     angularSpeed:
       min: 0
       max: 1
     scale:
-      min: 0
-      max: 1
+      min: 0.2
+      max: 0.7
     color:
       hue:
         min: 0
@@ -296,18 +373,22 @@ MonoBehaviour:
     uniformColor: 0
     oscillationDirection: 2
     oscillationAmplitude:
-      min: 0.21
-      max: 0.18
+      min: 0
+      max: 0
     oscillationFrequency:
-      min: 0.5
-      max: 1
+      min: 0
+      max: 0
     lifecycle:
       growingDuration:
-        min: 0
-        max: 0
-      dyingDuration:
-        min: 1.3262032
+        min: 1
         max: 2
+      adultDuration:
+        min: 10
+        max: 15
+      dyingDuration:
+        min: 1
+        max: 2
+  spawnProgress: 20
   surfaceOnly: 1
 --- !u!4 &1889367510
 Transform:
@@ -323,3 +404,78 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2132875818
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2132875821}
+  - component: {fileID: 2132875820}
+  - component: {fileID: 2132875819}
+  - component: {fileID: 2132875822}
+  m_Layer: 8
+  m_Name: KillZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &2132875819
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132875818}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2132875820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132875818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c767828671b054648b66db8c2eca8d2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dyingDuration: 0.5
+--- !u!4 &2132875821
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132875818}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.2, y: 3.844, z: 0.728}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &2132875822
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132875818}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

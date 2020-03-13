@@ -1316,6 +1316,7 @@ MonoBehaviour:
   destroyKey: 120
   creationSpeedSlider: {fileID: 512376170}
   destructionSpeedSlider: {fileID: 928336191}
+  destroyDuration: 1
   storage: {fileID: 1536394039}
   levelCount: 2
   reseedOnLoad: 0

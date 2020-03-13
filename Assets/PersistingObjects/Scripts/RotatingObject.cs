@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RotatingObject : PersistableObject
+public class RotatingObject : GameLevelObject
 {
     [SerializeField]
     Vector3 angularVelocity;
-    // Start is called before the first frame update
     void Start()
     {
 
     }
 
-    // Update is called once per frame
-    private void FixedUpdate()
+    public override void GameUpdate()
     {
         transform.Rotate(angularVelocity * Time.deltaTime);
     }
